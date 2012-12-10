@@ -45,21 +45,35 @@ class MySQL {
 		}
 		else throw new Exception('You need to give all parameter!');
 	}
-    
-	public function getMultipleQuery($row, $value){
+
+	/*
+	 * getArray() - Gets an Array from Table $table and where $row = $value AND $row2 = $value2
+	 */
+	    
+	public function getMA($table, $row = array(), $value = array()){
         if(isset($row) && isset($value)) {
             if(count($row) == count($value) && count($row) > 1 && count($value) > 1) {
-                $query = "";
+                $query = "SELECT * FROM ".$table." WHERE ";
                 for($i=0; $i = count($row); $i++) {
                     if(gettype($value[$i])=="string") {
-                        $query .= "AND `".$row[$i]."` = '".$value[$i]."'";
-                        return $query;
+                        if($i == 0) {
+                        $query .= "`".$row[$i]."` = '".$value[$i]."'";
+                        }
+                        else {
+                            $query .= " AND `".$row[$i]."` = '".$value[$i]."'";
+                        }
                     }
                     elseif(gettype($value[$i])=="integer" || gettype($value[$i])=="double"){
-                        $query .= "AND `".$row[$i]."` = ".$value[$i]."";
-                        return $query;
+                        if($i == 0) {
+                            $query .= "`".$row[$i]."` = '".$value[$i]."'";
+                        }
+                        else {
+                            $query .= " AND `".$row[$i]."` = ".$value[$i]."";
+                        }
                     }
                 }
+                return $query;
+                
             } else {
                 if(gettype($value)=="string") {
                     $query = "`".$row."` = '".$value."'";
@@ -78,14 +92,14 @@ class MySQL {
 	 * getArray() - Gets an Array from Table $table and where $row = $value
 	 */
 	
-	public function getArray($table,$row = array(),$value = array()){
+	public function getArray($table,$row , $value){
 		if(isset($table)){
 			if(mysql_query('SELECT * FROM `'.$table.'`')){ # Checks if table exists
 				if(gettype($value)=="string"){ # Checks the type for different querys
-					$result = mysql_query("SELECT * FROM `".$table."` WHERE ".getMultipleQuery($row, $value)."");
+					$result = mysql_query("SELECT * FROM `".$table."` WHERE `".$row."` = '".$value."'");
 				}
 				elseif(gettype($value)=="integer" || gettype($value)=="double"){
-					$result = mysql_query("SELECT * FROM `".$table."` WHERE ".getMultipleQuery($row, $value)."");
+					$result = mysql_query("SELECT * FROM `".$table."` WHERE `".$row."` = ".$value."");
 				}
 				if(!$result) throw new Exception('Query Failed!');
 				else return mysql_fetch_array($result);
@@ -95,8 +109,4 @@ class MySQL {
 		else throw new Exception('You need to give all parameter!');
 	}
 }
-
-
-
-
 ?>
