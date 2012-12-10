@@ -6,10 +6,10 @@
  
 class User {
     
-    __construct() {
+    public function __construct() {
         $this->utils = new Utils();
-        $this->mysql = new MySQL();
         $this->config = new Config();
+        $this->mysql = new MySQL();
     }
 
     public function checkData($user, $pass){
@@ -32,6 +32,8 @@ class User {
 		$password_hash = hash('sha256', $salted_Password);
 		return $password_hash;
 	
+}
+
 }
 
 

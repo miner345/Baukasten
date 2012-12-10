@@ -10,9 +10,10 @@ class MySQL {
 	 * __construct - Use the Params to connect
 	 */
 	
-	public function __construct($host, $username, $password, $database){
+	public function __construct(){
 		try {
-			$this->connect($host, $username, $password, $database);
+			$this->config = new Config();
+			$this->connect($this->config->mysql_host, $this->config->mysql_user, $this->config->mysql_password, $this->config->mysql_database);
 		}
 		catch (Exception $e){
 			echo 'Exception @ connect(): '.$e;
