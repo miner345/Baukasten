@@ -20,6 +20,12 @@ class Page {
 	 */
 	
 	public function load(){
+		try {
+			$res = include('pages/'.$this->name.'.page.php');
+		}
+		catch(Exception $e){
+			throw new Exception($e);
+		}
 		
 	}
 }
