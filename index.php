@@ -34,6 +34,9 @@
 		<meta name="author" content="<?php echo $config->author; ?>">
 		<meta name="keywords" content="<?php echo $config->keywords; ?>">
 		
+		<!--     Style     -->
+		<?php echo $css->load(); ?>
+		
 	</head>
 	<body>
 		<div id="wrapper">
