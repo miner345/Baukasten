@@ -53,23 +53,23 @@ class MySQL {
 	    
 	public function getMA($table, $row = array(), $value = array()){
         if(isset($row) && isset($value)) {
-            $query = "SELECT * FROM `".$table."` WHERE ";
+            $query = "SELECT * FROM `".mysql_real_escape_string($table)."` WHERE ";
             if(count($row) == count($value) && count($row) > 1 && count($value) > 1) {
                 for($i=0; $i <= count($row); $i++) {
                     if(gettype($value[$i])=="string") {
                         if($i == 0) {
-                        $query .= "`".$row[0]."` = '".$value[0]."'";
+                        $query .= "`".mysql_real_escape_string($row[0])."` = '".mysql_real_escape_string($value[0])."'";
                         }
                         else {
-                            $query .= " AND `".$row[$i]."` = '".$value[$i]."'";
+                            $query .= " AND `".mysql_real_escape_string($row[$i])."` = '".mysql_real_escape_string($value[$i])."'";
                         }
                     }
                     elseif(gettype($value[$i])=="integer" || gettype($value[$i])=="double"){
                         if($i == 0) {
-                            $query .= "`".$row[0]."` = '".$value[0]."'";
+                            $query .= "`".mysql_real_escape_string($row[0])."` = '".mysql_real_escape_string($value[0])."'";
                         }
                         else {
-                            $query .= " AND `".$row[$i]."` = ".$value[$i]."";
+                            $query .= " AND `".mysql_real_escape_string($row[$i])."` = ".mysql_real_escape_string($value[$i])."";
                         }
                     }
                 }

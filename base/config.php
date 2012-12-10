@@ -60,6 +60,19 @@ class Config {
 	# Seperate multiple Extensions with ' but without spaces
 	# Example: public $extensions = "example,extension,blabla";
 	public $extensions = "example,extension,blabla";
+    
+/**
+ * Until Config
+ */    
+    # the minimum number to register for usernames
+    public $minUsernameLen = 8;
+    
+    # the minimum number to register for password
+    public $minPasswordLen = 8;
+    
+    # The email as responsibil field
+    #public $needEmailtoregist = false;
+ 
 }
 
 ?>
