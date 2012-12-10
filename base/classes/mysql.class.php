@@ -47,7 +47,7 @@ class MySQL {
 	}
 
 	/*
-	 * getArray() - Gets an Array from Table $table and where $row = $value AND $row2 = $value2
+	 * getMA() - Gets an Array from Table $table and where $row = $value AND $row2 = $value2
 	 */
 	    
 	public function getMA($table, $row = array(), $value = array()){
@@ -57,7 +57,7 @@ class MySQL {
                 for($i=0; $i = count($row); $i++) {
                     if(gettype($value[$i])=="string") {
                         if($i == 0) {
-                        $query .= "`".$row[$i]."` = '".$value[$i]."'";
+                        $query .= "`".$row[0]."` = '".$value[0]."'";
                         }
                         else {
                             $query .= " AND `".$row[$i]."` = '".$value[$i]."'";
@@ -65,7 +65,7 @@ class MySQL {
                     }
                     elseif(gettype($value[$i])=="integer" || gettype($value[$i])=="double"){
                         if($i == 0) {
-                            $query .= "`".$row[$i]."` = '".$value[$i]."'";
+                            $query .= "`".$row[0]."` = '".$value[0]."'";
                         }
                         else {
                             $query .= " AND `".$row[$i]."` = ".$value[$i]."";
