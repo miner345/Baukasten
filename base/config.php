@@ -11,7 +11,13 @@ class Config {
 	
 	# Name of your Page
 	public $name = "";
- 
+	
+	# Menu Order 
+	# Write the Pages in the Menu in the Order you want
+	# Seperate with , but without spaces.
+	# For pages write the part infront of the .page.php and for Extensions write the foldername
+	public $menu_order = "example,home";
+	
 /**
  * Meta
  */

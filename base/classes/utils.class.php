@@ -56,6 +56,23 @@ class Utils {
 		}
 	}	
 	
+	
+	/**
+	 * getMenu() - Returns an Array
+	 */
+	
+	public function getMenu(){
+		$array = explode(',',$this->config->menu_order);
+		foreach($array as $menu){
+			$check = $this->checkPOE($menu);
+			if($check=='extension' || $check=='page'){
+				$return[]=$menu;
+			}
+			else throw new Exception('Fail in Menu Order: '.$menu.' is not an Page or Extension!');
+		}
+		return $return;
+	}
+	
 }
 
 
