@@ -43,7 +43,7 @@
 /**
  * Load Utils Class
  */
-	$utils = new Utils($config);
+	$utils = new Utils();
 	
 /**
  * Load CSS Class

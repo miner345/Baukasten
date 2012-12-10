@@ -4,14 +4,13 @@
  * Utils Class
  */
 
-class Utils {
+class Utils extends Config{
 	
 	/**
 	 * __construct() - $config gives the Config values to Utils class
 	 */
 	
-	public function __construct($config){
-		$this->config = $config;
+	public function __construct(){
 	}
 	
 	/**
@@ -34,7 +33,7 @@ class Utils {
 	 */
 	
 	public function getConfigExtensions(){
-		$array = explode(',',$this->config->extensions);
+		$array = explode(',',parent::extensions);
 		return $array;
 	}
 	
@@ -64,7 +63,7 @@ class Utils {
 	 */
 	
 	public function getMenu(){
-		$array = explode(',',$this->config->menu_order);
+		$array = explode(',',parent::menu_order);
 		foreach($array as $menu){
 			$check = $this->checkPOE($menu);
 			if($check=='extension' || $check=='page'){
