@@ -38,7 +38,7 @@
 	<body>
 		<div id="wrapper">
 			<div id="head">
-			
+				<div id="banner"><img src="base/banner.png" alt="Banner of <?php echo $config->name; ?>" /></div>
 			</div>
 			<div id="main">
 			
