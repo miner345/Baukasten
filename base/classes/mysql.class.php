@@ -53,7 +53,7 @@ class MySQL {
 	    
 	public function getMA($table, $row = array(), $value = array()){
         if(isset($row) && isset($value)) {
-            $query = "SELECT * FROM ".$table." WHERE ";
+            $query = "SELECT * FROM `".$table."` WHERE ";
             if(count($row) == count($value) && count($row) > 1 && count($value) > 1) {
                 for($i=0; $i <= count($row); $i++) {
                     if(gettype($value[$i])=="string") {

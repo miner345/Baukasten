@@ -14,7 +14,7 @@ class User {
     public function checkData($user, $pass){
         if(isset($user) && isset($pass)) {
             $pass = md5(sha1($pass));
-            if($data = $this->mysql->getMA($table, array(0=>'username', 1=>'password'),  array(0 => '".$user."', 1 => '".$pass."'))) {
+            if($data = $this->mysql->getMA($this->config->table_prefix."user", array(0=>'username', 1=>'password'),  array(0 => "$user", 1 => "$pass"))) {
                 print_r($data);
             }
             else throw new Exception('Username or Password is false!');
