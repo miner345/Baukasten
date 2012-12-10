@@ -5,6 +5,7 @@
 
 class MySQL {
 	
+    public $tables = "";
 	/**
 	 * __construct - Use the Params to connect
 	 */
@@ -23,7 +24,7 @@ class MySQL {
 	 */
 	
 	public function connect($host, $username, $password, $database){
-		if(isset($host) && isset($username) && isset($password) && isset($database)){
+		if(isset($host) && isset($username) && isset($password), && isset($database)){
 			$connection = mysql_connect($host, $username, $password);
 			if(!$connection) throw new Exception('Connection to MySQL failed!');
 			$db = mysql_select_db($database);
@@ -44,13 +45,44 @@ class MySQL {
 		}
 		else throw new Exception('You need to give all parameter!');
 	}
+    
+	public function getMultipleQuery($row, $value){
+        if(isset($row) && isset($value)) {
+            if(count($row) == count($value) && count($row) > 1 && count($value) > 1) {
+                /* foreach($row as $rows && $value as $values) {
+                
+                } */
+                $query = "";
+                for($i=0; $i = count($row); $i++) {
+                    if(gettype($value)=="string") {
+                        $query .= "AND `".$row[$i]."` = '".$value[$i]."'";
+                        return $query;
+                    }
+                    elseif(gettype($value)=="integer" || gettype($value)=="double"){
+                        $query .= "AND `".$row[$i]."` = ".$value[$i]."";
+                        return $query;
+                    }
+                }
+            } else {
+                if(gettype($value)=="string") {
+                    $query = "`".$row."` = '".$value."'";
+                    return $query;
+                }
+                elseif(gettype($value)=="integer" || gettype($value)=="double"){
+                    $query = "`".$row."` = ".$value."";
+                    return $query;
+                }
+            }
+        }
+		else throw new Exception('You need to give all parameter!');
+	}
 	
 	/**
 	 * getArray() - Gets an Array from Table $table and where $row = $value
 	 */
 	
-	public function getArray($table, $row, $value){
-		if(isset($table) && isset($row) && isset($value)){
+	public function getArray($table, array(), array()){
+		if(isset($table)){
 			if(mysql_query('SELECT * FROM `'.$table.'`')){ # Checks if table exists
 				if(gettype($value)=="string"){ # Checks the type for different querys
 					$result = mysql_query("SELECT * FROM `".$table."` WHERE `".$row."` = '".$value."'");
