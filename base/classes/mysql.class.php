@@ -24,7 +24,7 @@ class MySQL {
 	 */
 	
 	public function connect($host, $username, $password, $database){
-		if(isset($host) && isset($username) && isset($password), && isset($database)){
+		if(isset($host) && isset($username) && isset($password) && isset($database)){
 			$connection = mysql_connect($host, $username, $password);
 			if(!$connection) throw new Exception('Connection to MySQL failed!');
 			$db = mysql_select_db($database);
