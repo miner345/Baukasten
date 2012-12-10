@@ -48,6 +48,9 @@ class Config {
 	# Database
 	public $mysql_database = "ni55453_2sql6";
 	
+	# Optional Table Prefix
+	public $table_prefix = "";
+	
 /**
  * Extensions
  */
