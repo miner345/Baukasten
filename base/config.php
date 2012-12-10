@@ -10,7 +10,7 @@ class Config {
  */
 	
 	# Name of your Page
-	public $name = "";
+	public $name = "Test";
 	
 	# Menu Order 
 	# Write the Pages in the Menu in the Order you want
@@ -23,14 +23,14 @@ class Config {
  */
 
 	# Description of Your Page (Appears in Google etc.)
-	public $description = "";
+	public $description = "Test Page";
 	
 	# Author | Your Name or Nickname
-	public $author = "";
+	public $author = "miner345 and dragongun100";
 	
 	# Keywords | Important words, which help Google Users to find your Page better
 	# Multiple keywords are seperated with a ,  (Key, word, bla, bla)
-	public $keywords = "";
+	public $keywords = "test, baukasten, bla";
  
 /**
  * MySQL Database Configuration
