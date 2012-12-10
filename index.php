@@ -18,17 +18,8 @@
 	
 
 	/******************************* Testing ***********************/
-	$extension = new Extension('example');
-	if($extension->validate()){
-		$extension->load();
-	}
-	$css = new CSS();
-	print_r($css->getStyles());
 	
 	/***************************************************************/
-    $user = new User();
-    echo "<br /><br />";
-    echo $user->checkData("dragongun100", "123456");
 ?>
 <!---------------------------- Start of HTML Part ------------------->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
