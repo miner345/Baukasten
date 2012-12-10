@@ -43,7 +43,7 @@ class Utils {
      * type like: mysql
 	 */
 
-	public function cleanInput($values = array(), $type)
+	public function cleanInput($values, $type)
 	{
 		if (get_magic_quotes_gpc())
 		{
@@ -51,7 +51,9 @@ class Utils {
                 case "mysql" :
                     $inputs = mysql_real_escape_string($values);
                 ;
-                default:;
+                default:
+                    $inputs = mysql_real_escape_string($values);
+                ;
             }
 		}
 	}	
