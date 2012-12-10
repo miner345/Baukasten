@@ -73,7 +73,7 @@ class MySQL {
                         }
                     }
                 }
-                return $query[0];
+                return $query;
                 
             } else {
                 if(gettype($value)=="string") {
