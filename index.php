@@ -22,7 +22,8 @@
 	if($extension->validate()){
 		$extension->load();
 	}
-	echo $utils->checkPOE('home');
+	$css = new CSS();
+	print_r($css->getStyles());
 	
 	/***************************************************************/
 
