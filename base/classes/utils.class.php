@@ -38,7 +38,23 @@ class Utils {
 		return $array;
 	}
 	
-	
+	/**
+	 * cleanInput() - Clean the form inputs
+     * type like: mysql
+	 */
+
+	public function cleanInput($values = array(), $type)
+	{
+		if (get_magic_quotes_gpc())
+		{
+            switch($type) {
+                case "mysql" :
+                    $inputs = mysql_real_escape_string($values);
+                ;
+                default:;
+            }
+		}
+	}	
 	
 }
 
