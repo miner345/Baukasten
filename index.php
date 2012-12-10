@@ -22,7 +22,6 @@
 	if($extension->validate()){
 		$extension->load();
 	}
-	$css = new CSS();
 	print_r($css->getStyles());
 	
 	/***************************************************************/
