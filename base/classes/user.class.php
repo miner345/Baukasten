@@ -5,9 +5,8 @@
  */
 class User {
 
-	
-	var $name ;
-	var $id;
+	public $name; #safe later the username
+	public $id; #safe later the id
 		
 	/**
 	 * This load the object from the classes
@@ -25,9 +24,11 @@ class User {
 
     public function login($user, $pass){
         if(isset($user) && isset($pass)) {
-            $pass = md5(sha1($pass));
-            if($data = $this->mysql->query($this->mysql->getArray("user", "name", $user, "password", $pass))) {
+            $pass = $this->encrypt_password($pass);
+            if($data = $this->mysql->query($this->mysql->getArray("user", "name", $user, "password", $pass))) {           	
             	$this->name = $user;
+            	$this->updateUser();
+            	return true;
             }
             else throw new Exception('Username or Password is false!');
         }
@@ -42,6 +43,7 @@ class User {
     
     public function updateUser() {
     	if(!empty($this->name)) {
+    		$user = $this->name;
     		$this->mysql->query("UPDATE `".$this->config->table_prefix."user` SET `last_ip`= '".mysql_real_escape_string($_SERVER['REMOTE_ADDR'])."' `last_timestamp` = NOW() WHERE (`name`='".mysql_real_escape_string($user)."'");
     	}
     }    
@@ -135,27 +137,38 @@ class User {
 	 */
 	
 	public function encrypt_password($password) {
-        $password = md5(sha1($password));
-        return $password;
+        if(!empty($password)) {
+        	$password = md5(sha1($password));
+        	return $password;
+        }
+        else {
+        	return false;
+        }
     }
+    
+
+    /**
+     * register: Do regist a User 
+     */
+    
     
     public function register($user, $pass, $passrep, $email = "") {
 	   	if($user == null || $pass == null || $passrep == null) {
 	   		throw new Exception('Please fill all the fields!');
 	   	} else {
-	   		if($checkExistUsername = $this->checkUsernameExist($user)) {
-	   			if($checkValidUsername = $this->checkValidUsername($user)) {
-			   		if(strlen($user) >= $this->config->minUsernameLen) {
-			   			if(strlen($pass) >= $this->config->minPasswordLen) {
-			   				if($pass == $passrep) {
-			   					$user = trim(mysql_real_escape_string($user));
+	   		if($checkExistUsername = $this->checkUsernameExist($user)) {   # Check is username aviable
+	   			if($checkValidUsername = $this->checkValidUsername($user)) { # Check is username valid
+			   		if(strlen($user) >= $this->config->minUsernameLen) {	# Check weather in config, if the username have a minimum of leng
+			   			if(strlen($pass) >= $this->config->minPasswordLen) { # Check weather in config, if the password have a minimum of leng
+			   				if($pass == $passrep) {								# Check if password and password2 match
+			   					$user = trim(mysql_real_escape_string($user));	 
 			   					$pass = trim(mysql_real_escape_string($pass));
-                                if(!empty($email)) {
-                                    if($checkValidEmail = $this->checkValidEmail($email)) {
-                                        if($checkValidEmail = $this->checkEmailExist($email)) {
-                                            $pass = $this->encrypt_password($pass);
-                                            if($doregist = mysql_query("INSERT INTO user (name,password,register_ip,register_timestamp, email) VALUES ('".$user."','".$pass."','".mysql_real_escape_string($_SERVER['REMOTE_ADDR'])."',NOW(), '".trim(mysql_real_escape_string($email))."')")) {
-                                                echo "<span style='color:green'>Registrierung ist erfolgreich.</span>";
+                                if(!empty($email)) {							# Check if filled email
+                                    if($checkValidEmail = $this->checkValidEmail($email)) { # Check if email is valid
+                                        if($checkEmailExist = $this->checkEmailExist($email)) { # Check is email aviable 
+                                            $pass = $this->encrypt_password($pass);				# crypt the password
+                                            if($doregist  = $this->mysql->query("INSERT INTO user (name,password,register_ip,register_timestamp, email) VALUES ('".$user."','".$pass."','".mysql_real_escape_string($_SERVER['REMOTE_ADDR'])."',NOW(), '".trim(mysql_real_escape_string($email))."')")) {  # do write the world in database
+                                                return true;
                                             }
                                             else { echo("An Error code on Regi code: 2");}        
                                         }
@@ -165,7 +178,7 @@ class User {
                                 }
                                 else {
                                     $pass = $this->encrypt_password($pass);
-                                    if($doregist = mysql_query("INSERT INTO user (name,password,register_ip) VALUES ('".$user."','".$pass."',NOW())")) {
+                                    if($doregist = $this->mysql->query("INSERT INTO user (name,password,register_ip,last_timestamp) VALUES ('".$user."','".$pass."','".$_SERVER['REMOTE_ADDR']."',NOW())")) {
                                         echo "<span style='color:green'>Registrierung ist erfolgreich.</span>";
                                     }
                                     else { echo("An Error code on Regi code: 1");}       
@@ -183,6 +196,10 @@ class User {
 	   	}    
     }
     
+
+    /**
+     * onPage: write in the databse the actually pagename and update the last_ip, last_timestamp
+     */    
     
     public function onPage($pagename) {
     	if(!empty($pagename)) {
@@ -190,6 +207,7 @@ class User {
     	} 
     	else {
     		echo "Pagename is empty!";
+    		return false;
     	}    	
     }
     
