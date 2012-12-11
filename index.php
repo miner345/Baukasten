@@ -19,8 +19,7 @@
 
 	/*************************** Testing ***********************/
 	$regist = new User();
-	$testfunc = new MySQL();
-    print_r($testfunc->getMA("user", "username,email", "dragongun200,test@hotmail.de", true, false));
+    print_r($db->getArray('user','username','miner345','email','info@miner345.de'));
 	/***********************************************************/
 ?>
 <!---------------------------- Start of HTML Part ------------------->
