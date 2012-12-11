@@ -51,17 +51,16 @@ class MySQL {
 	}
 	
 	/**
-	 * getArray() - Gets an Array from Table $table and where $row = $value
+	 * getArray() - Gets an Array from Table $table and where $row = $value, 
+	 * Can user multiple aruments like getArray('table','id',5,'name','miner345',...)
 	 */
 	
 	public function getArray($table, $row, $value){
 		if(isset($table)){
 			if(mysql_query('SELECT * FROM `'.$table.'`')){ # Checks if table exists
 				$array = func_get_args();
-				$count = (count($array)-1) / 2;
+				$count = (count($array)-1) / 2 -1;
 				$query = "SELECT * FROM `".$table."` WHERE";
-				echo $count;
-				print_r($array);
 				for($i=0;$i<=$count;$i++){
 					$row = $array[$i*2+1];
 					$value = $array[$i*2+2];
@@ -82,13 +81,13 @@ class MySQL {
 						}
 					}
 					else throw new Exception('Query failed!');
-					$result = $this->query($query);
-					echo $query;
-					if(!$result) return false;
-					else {
-						$array = mysql_fetch_array($result);
-						return $array;
-					}
+					
+				}
+				$result = $this->query($query);
+				if(!$result) return false;
+				else {
+					$array = mysql_fetch_array($result);
+					return $array;
 				}
 			}
 			else throw new Exception('Table not found!');
