@@ -6,7 +6,7 @@
 
 class CSS {
 	
-	$this->style = 'default.css';
+	public $style = 'default.css';
 	
 	/**
 	 * getStyles() - Returns an array with [file] as the filename and [name] as the given name in first line
