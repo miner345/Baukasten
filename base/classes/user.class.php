@@ -113,32 +113,30 @@ class User {
                                             if($doregist = mysql_query("INSERT INTO users (username,password,register_ip,email) VALUES ('".$user."','".$pass."',NOW(),'".trim(mysql_real_escape_string($email))."')")) {
                                                 echo "<span style='color:green'>Registrierung ist erfolgreich.</span>";
                                             }
-                                            else throw new Exception('An ERROR on registration code: 1');       
+                                            else { echo("An Error code on Regi code: 2");}        
                                         }
-                                        else throw new Exception('The Email is already exist!');                                        
+                                        else { echo("The E-Mail is already exist!");}                                       
                                     }
-                                    else throw new Exception('Please enter a valid E-Mail adress!');  
+                                    else { echo("Please enter a valid E-Mail!");}  
                                 }
                                 else {
                                     $pass = $this->encrypt_password($pass);
                                     if($doregist = mysql_query("INSERT INTO user (username,password,register_ip) VALUES ('".$user."','".$pass."',NOW())")) {
                                         echo "<span style='color:green'>Registrierung ist erfolgreich.</span>";
                                     }
-                                    else throw new Exception('An ERROR on registration code: 1');       
+                                    else { echo("An Error code on Regi code: 1");}       
                                 }	                                
 			   				}
-                            else throw new Exception('The Passwords dont match!');     
+                            else { echo("The password dont match!");}    
 			   			}
-                        else throw new Exception('The minimum number to register for password is '.$this->config->minPasswordLen.'');
+                        else { echo("The minimum number to register for password is ".$this->config->minPasswordLen."");}
 			   		}
-                    else throw new Exception('The minimum number to register for username is '.$this->config->minUsernameLen.'');
+                    else { echo("The minimum number to register for username is ".$this->config->minPasswordLen."");}
 			   	} 
-                else throw new Exception('Please enter a Valid username!');
+                else { echo("Please enter a valid username!");}
 	   		} 
-            else throw new Exception('The username is already exist!');
+            else { echo("The username is already exist!");}
 	   	}    
     }
 }
-
-
 ?>
