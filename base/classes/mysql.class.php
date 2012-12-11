@@ -52,7 +52,7 @@ class MySQL {
 	
 	/**
 	 * getArray() - Gets an Array from Table $table and where $row = $value, 
-	 * Can user multiple aruments like getArray('table','id',5,'name','miner345',...)
+	 * Can use multiple aruments like getArray('table','id',5,'name','miner345',...)
 	 */
 	
 	public function getArray($table, $row, $value){
