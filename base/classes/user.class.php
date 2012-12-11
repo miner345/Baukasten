@@ -5,6 +5,10 @@
  */
 class User {
 
+	
+	var $name ;
+	var $id;
+		
 	/**
 	 * This load the object from the classes
 	 */
@@ -22,8 +26,8 @@ class User {
     public function login($user, $pass){
         if(isset($user) && isset($pass)) {
             $pass = md5(sha1($pass));
-            if($data = $this->mysql->query($this->mysql->getMA("user", "username,password", "".$user.", ".$pass.""))) {
-            
+            if($data = $this->mysql->query($this->mysql->getArray("user", "name", $user, "password", $pass))) {
+            	$this->name = $user;
             }
             else throw new Exception('Username or Password is false!');
         }
@@ -31,17 +35,30 @@ class User {
     }
 
     
-	/**
-	 * changePassword: Change the password from the User
-	 */
+    /**
+     * updateUser: User get every login a new ip in mysql thats is "last_ip"
+     */
+    
+    
+    public function updateUser() {
+    	if(!empty($this->name)) {
+    		$this->mysql->query("UPDATE `".$this->config->table_prefix."user` SET `last_ip`= '".mysql_real_escape_string($_SERVER['REMOTE_ADDR'])."' `last_timestamp` = NOW() WHERE (`name`='".mysql_real_escape_string($user)."'");
+    	}
+    }    
  
-    public function changePassword($user, $oldpw, $npw, $npwrep) {
+    /**
+     * changePassword: Change the password from the User
+     */
+    
+    public function changePassword($oldpw, $npw, $npwrep) {
         if(isset($oldpw) && isset($npw) && isset($npwrep)) {
-            $oldpw = md5(sha1($oldpw));
-            if($checkoldpw = $this->mysql->query($this->mysql->getMA("user", "username,password", "".$user.", ".$oldpw.""))) {
+            $oldpw = $this->encrypt_password($oldpw);
+            $user = mysql_real_escape_string($this->name);
+            $oldpw = mysql_real_escape_string($oldpw);
+            if($checkoldpw = $this->mysql->query("SELECT * FROM `user` WHERE `name` = '".$user."' AND `password` = '.$oldpw.'")) {
                 if($npw == $npwrep) {
-                    $npwrep = md5(sha1($npwrep));
-                    if($this->mysql->query("UPDATE `".$this->config->table_prefix."user` SET `".mysql_real_escape_string($npwrep)."`='' WHERE (`username`='".mysql_real_escape_string($user)."') AND (`password`='".mysql_real_escape_string($oldpw)."')")) {
+                    $npwrep = $this->encrypt_password($npwrep);
+                    if($this->mysql->query("UPDATE `".$this->config->table_prefix."user` SET `password` = '".mysql_real_escape_string($npwrep)."' WHERE (`name`='".mysql_real_escape_string($user)."') AND (`password`='".mysql_real_escape_string($oldpw)."')")) {
                         return true;
                     }
                     else throw new Exception('ERROR in changePassword!');
@@ -56,7 +73,11 @@ class User {
 	/**
 	 * forgotPassword: chnage the passwort autimaticly with email support
 	 */
+    
+    public function forgotPassword($username = "", $email = "") {
 
+    }
+    
 	/**
 	 * checkValidUsername: check if username is valid
 	 */
@@ -87,8 +108,8 @@ class User {
 	 * checkUsernameExist: check if Username is exist
 	 */
 		
-	public function checkUsernameExist($username) {
-		$sqlres = mysql_query("SELECT username FROM user WHERE username = '".mysql_real_escape_string($username)."'");
+	public function checkUsernameExist($username = "", $id = "") {
+		$sqlres = mysql_query("SELECT username FROM user WHERE username = '".mysql_real_escape_string($username)."' OR id = $id");
 		if(mysql_num_rows($sqlres)) {
 			return false;
 		} else {
@@ -133,7 +154,7 @@ class User {
                                     if($checkValidEmail = $this->checkValidEmail($email)) {
                                         if($checkValidEmail = $this->checkEmailExist($email)) {
                                             $pass = $this->encrypt_password($pass);
-                                            if($doregist = mysql_query("INSERT INTO user (username,password,register_ip,email) VALUES ('".$user."','".$pass."',NOW(),'".trim(mysql_real_escape_string($email))."')")) {
+                                            if($doregist = mysql_query("INSERT INTO user (name,password,register_ip,register_timestamp, email) VALUES ('".$user."','".$pass."','".mysql_real_escape_string($_SERVER['REMOTE_ADDR'])."',NOW(), '".trim(mysql_real_escape_string($email))."')")) {
                                                 echo "<span style='color:green'>Registrierung ist erfolgreich.</span>";
                                             }
                                             else { echo("An Error code on Regi code: 2");}        
@@ -144,7 +165,7 @@ class User {
                                 }
                                 else {
                                     $pass = $this->encrypt_password($pass);
-                                    if($doregist = mysql_query("INSERT INTO user (username,password,register_ip) VALUES ('".$user."','".$pass."',NOW())")) {
+                                    if($doregist = mysql_query("INSERT INTO user (name,password,register_ip) VALUES ('".$user."','".$pass."',NOW())")) {
                                         echo "<span style='color:green'>Registrierung ist erfolgreich.</span>";
                                     }
                                     else { echo("An Error code on Regi code: 1");}       
@@ -160,6 +181,37 @@ class User {
 	   		} 
             else { echo("The username is already exist!");}
 	   	}    
+    }
+    
+    
+    public function onPage($pagename) {
+    	if(!empty($pagename)) {
+    		$this->mysql->query("UPDATE `".$this->config->table_prefix."user` SET `last_ip`= '".mysql_real_escape_string($_SERVER['REMOTE_ADDR'])."', `last_timestamp` = NOW(), `last_page` = '".mysql_real_escape_string($pagename)."' WHERE (`name`='".mysql_real_escape_string($user)."'");
+    	} 
+    	else {
+    		echo "Pagename is empty!";
+    	}    	
+    }
+    
+    /**
+     * getUser: Regenerate new username and id, how you can pickup it with $user = new User;m $user->name or $user->id
+     */
+    
+    public function getUser() {
+    	if(empty($this->name) && empty($this->id)) {
+    		if(empty($_SESSION)) {
+    			return false;
+    		} else {
+    			if ($this->checkUsernameExist("", $_SESSION['USERID'])) {
+    				$rows = $this->mysql->getArray("user", "id", $_SESSION['USERID']);
+    				$this->name = $rows['name'];
+    				$this->id = $rows['id'];
+    				return true;
+    			}
+    		}	
+    	} else {
+    		return true;
+    	}		
     }
 }
 ?>
