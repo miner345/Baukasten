@@ -43,7 +43,14 @@
 				<div id="banner"><img src="base/banner.png" alt="Banner of <?php echo $config->name; ?>" /></div>
 			</div>
 			<div id="main">
-			
+				<div id="navigation">
+					<ul>
+						<a href=""><li>Test</li></a>
+						<a href=""><li>Test</li></a>
+						<a href=""><li>Test</li></a>
+						<a href=""><li>Test</li></a>
+					</ul>
+				</div>
 			</div>
 			<div id="footer">
 			
