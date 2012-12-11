@@ -4,8 +4,7 @@
  */
 
 class MySQL {
-	
-    public $tables = "";
+		
 	/**
 	 * __construct - Use the Params to connect
 	 */
@@ -41,48 +40,106 @@ class MySQL {
 	public function query($query){
 		if(isset($query)){
 			$result = mysql_query($query);
-			if(!$result) throw new Exception('Query Failed!');
-			return $result;
+			if(!$result) {
+				echo "<br />Query Failed!<br />".mysql_error()."";
+			}
+			else {
+				$result = mysql_free_result($result);
+				return $result;
+			}
 		}
 		else throw new Exception('You need to give all parameter!');
 	}
 
 	/*
-	 * getMA() - Gets an Array from Table $table and where $row = $value AND $row2 = $value2
+	 * getMA() - Gets an Array from Table $table and where $row = $value AND $row2 = $value2....
+	 * 	$table = to select a who table for example: select * FROM ---> $table <---
+	 * 	$row = to select a what look for, for example: select * FROM user WHERE ---> username <--- = 'anamefromtable'
+	 * 	$value =The value from $row for exmaple: select * FROM user WHERE username = ---> 'dragongun100' <----
+	 * 	$usegetMASQL = to use in this function the function query() and mysql_fetch_array()
+	 * 	$useQuery = to use only query() 
+	 *  
+	 *  if $usegetMASQL and $useQuery False then send you the SQL code in a string or integer
+	 *  waring if is both by true, this givs an error! 
 	 */
 	    
-	public function getMA($table, $row = array(), $value = array()){
+	public function getMA($table, $row, $value, $usegetMASQL = false, $useQuery = false){
         if(isset($row) && isset($value)) {
-            $query = "SELECT * FROM `".mysql_real_escape_string($table)."` WHERE ";
+        	$table_prefix = $this->config->table_prefix;
+            $query = "SELECT * FROM `".$table_prefix.$table."` WHERE ";
+            $row = explode(",", $row);
+            $value = explode(",", $value);
             if(count($row) == count($value) && count($row) > 1 && count($value) > 1) {
                 for($i=0; $i <= count($row); $i++) {
                     if(gettype($value[$i])=="string") {
                         if($i == 0) {
-                        $query .= "`".mysql_real_escape_string($row[0])."` = '".mysql_real_escape_string($value[0])."'";
+                        $query .= "`".$row[0]."` = '".$value[0]."'";
                         }
                         else {
-                            $query .= " AND `".mysql_real_escape_string($row[$i])."` = '".mysql_real_escape_string($value[$i])."'";
+                            $query .= " AND `".$row[$i]."` = '".$value[$i]."'";
                         }
                     }
                     elseif(gettype($value[$i])=="integer" || gettype($value[$i])=="double"){
                         if($i == 0) {
-                            $query .= "`".mysql_real_escape_string($row[0])."` = '".mysql_real_escape_string($value[0])."'";
+                            $query .= "`".$row[0]."` = '".$value[0]."'";
                         }
                         else {
-                            $query .= " AND `".mysql_real_escape_string($row[$i])."` = ".mysql_real_escape_string($value[$i])."";
+                            $query .= " AND `".$row[$i]."` = ".$value[$i]."";
                         }
                     }
                 }
-                return $query;
+                
+                if ($usegetMASQL == true || $usegetMASQL == true && $useQuery == true) {
+                	$newRows = mysql_fetch_array(mysql_query($query));
+                	return $newRows;
+                }
+                elseif ($useQuery == true && $usegetMASQL = false) {
+                	$query = $this->query($query);
+                	return $query;
+                }
+                else {
+                	return $query;
+                }
                 
             } else {
                 if(gettype($value)=="string") {
-                    $query = "`".$row."` = '".$value."'";
-                    return $query;
+                    $query = "`".mysql_real_escape_string($row)."` = '".mysql_real_escape_string($value)."'";
+
+                    
+                    if ($usegetMASQL == true) {
+                    	if($query = $this->query($query)) {
+                    		return mysql_fetch_object($query);
+                    	} else {
+                    		echo "Query Failed! on getMA";
+                    	}
+                    }
+                    elseif ($useQuery == true) {
+                    	$query = $this->query($query);
+                    	return $query;
+                    }
+                    else {
+                    	return $query;
+                    }
+                    
+                    
                 }
-                elseif(gettype($value)=="integer" || gettype($value)=="double"){
-                    $query = "`".$row."` = ".$value."";
-                    return $query;
+                elseif(gettype($value)=="integer" || gettype($value)=="double") {
+                    $query = "`".mysql_real_escape_string($row)."` = ".mysql_real_escape_string($value)."";
+	                
+                    if ($usegetMASQL == true) {
+                    	if($query = $this->query($query)) {
+                    		return mysql_fetch_object($query);
+                    	} else {
+                    		echo "Query Failed! on getMA";
+                    	}
+                    }
+                    elseif ($useQuery == true) {
+                    	$query = $this->query($query);
+                    	return $query;
+                    }
+                    else {
+                    	return $query;
+                    }
                 }
             }
         }

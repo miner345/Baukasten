@@ -18,8 +18,9 @@
 	
 
 	/*************************** Testing ***********************/
-	$regist = new User;
-    $regist->register("drag", "123", "123", "test@hotmail.de");
+	$regist = new User();
+	$testfunc = new MySQL();
+    print_r($testfunc->getMA("user", "username,email", "dragongun200,test@hotmail.de", true, false));
 	/***********************************************************/
 ?>
 <!---------------------------- Start of HTML Part ------------------->
