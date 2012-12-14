@@ -37,23 +37,41 @@ body {
 #navigation li {
 	float: left;
 	list-style-type: none;
-	font-size: 40px;
-	padding: 10px 2px;
-	color: #fff;
+	margin-right: 15px;
+	height: 64px;
+	border-radius: 8px;
+	box-shadow: 5px 5px 6px #111;
 	text-decoration: none;
+	transition: margin 0.5s, box-shadow 0.5s, margin 0.5s;
+		-webkit-transition: margin 0.5s, box-shadow 0.5s, margin 0.5s;
+		-moz-transition: margin 0.5s, box-shadow 0.5s, margin 0.5s;
+		-o-transition: margin 0.5s, box-shadow 0.5s, margin 0.5s;
+}
+
+#navigation li:hover{
+	margin-top: 3px;
+	margin-right: 12px;
+	margin-left: 3px;
+	box-shadow: 2px 2px 3px #000;
 }
 
 .nav_1{
 	float: left;
 	width: 40px;
-	height: 70px;
+	height: 64px;
+	overflow: hidden;
 	background-image: url(default/nav_nor_1.png);
 	background-repeat: no-repeat;
 }
 
 .nav_2{
+	padding-top: 7px;
 	float: left;
-	height: 70px;
+	height: 57px;
+	color: #fff;s
+	text-shadow: -5px 0px 0px #0909D9;
+	font-size: 40px;
+	overflow: hidden;
 	background-image: url(default/nav_nor_2.png);
 	background-repeat: repeat-x;
 }
@@ -61,7 +79,8 @@ body {
 .nav_3 {
 	float: left;
 	width: 40px;
-	height: 70px;
+	height: 64px;
+	overflow: hidden;
 	background-image: url(default/nav_nor_3.png);
 	background-repeat: no-repeat;
 }
