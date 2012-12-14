@@ -30,18 +30,38 @@ body {
 
 #navigation {
 	width: 100%;
-	height: 50px;
+	height: 70px;
 	margin-top: 20px;
-	background-color: #555;
 }
 
 #navigation li {
 	float: left;
 	list-style-type: none;
-	font-size: 30px;
-	padding: 7px 20px;
-	border-right-style: groove;
-	border-right-color: #fff;
+	font-size: 40px;
+	padding: 10px 2px;
 	color: #fff;
 	text-decoration: none;
+}
+
+.nav_1{
+	float: left;
+	width: 40px;
+	height: 70px;
+	background-image: url(default/nav_nor_1.png);
+	background-repeat: no-repeat;
+}
+
+.nav_2{
+	float: left;
+	height: 70px;
+	background-image: url(default/nav_nor_2.png);
+	background-repeat: repeat-x;
+}
+
+.nav_3 {
+	float: left;
+	width: 40px;
+	height: 70px;
+	background-image: url(default/nav_nor_3.png);
+	background-repeat: no-repeat;
 }

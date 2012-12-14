@@ -40,15 +40,12 @@
 	<body>
 		<div id="wrapper">
 			<div id="head">
-				<div id="banner"><img src="base/banner.png" alt="Banner of <?php echo $config->name; ?>" /></div>
+				<div id="banner"><img src="css/banner.png" alt="Banner of <?php echo $config->name; ?>" /></div>
 			</div>
 			<div id="main">
 				<div id="navigation">
 					<ul>
-						<a href=""><li>Test</li></a>
-						<a href=""><li>Test</li></a>
-						<a href=""><li>Test</li></a>
-						<a href=""><li>Test</li></a>
+						<a href=""><li><div class="nav_1"></div><div class="nav_2">Test</div><div class="nav_3"></div></li></a>
 					</ul>
 				</div>
 			</div>
