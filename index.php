@@ -52,6 +52,16 @@
 						<a href=""><li><div class="nav_1"></div><div class="nav_2">Test5</div><div class="nav_3"></div></li></a>
 					</ul>
 				</div>
+                
+                <pre>
+               <?php
+               ################
+               $user = new User;
+               $user->AdvantageUserPermission();
+               ################
+               ?>               
+               </pre>
+                
 			</div>
 			<div id="footer">
 			

@@ -7,6 +7,7 @@ class User {
 
 	public $name; #safe later the username
 	public $id; #safe later the id
+	public $isAdmin = false; #safe later the Admin
 		
 	/**
 	 * This load the object from the classes
@@ -22,17 +23,24 @@ class User {
 	 * Login:Login the User in a secrue page :D
 	 */
 
-    public function login($user, $pass){
-        if(isset($user) && isset($pass)) {
-            $pass = $this->encrypt_password($pass);
-            if($data = $this->mysql->query($this->mysql->getArray("user", "name", $user, "password", $pass))) {           	
-            	$this->name = $user;
-            	$this->updateUser();
-            	return true;
-            }
-            else throw new Exception('Username or Password is false!');
-        }
-		else throw new Exception('You need to give all parameter!');
+    public function login($user, $pass, $pogress = "") {
+    	if(!empty($user) || !empty($pass) && isset($pogress) && empty($pogress)) {
+    		$pass = $this->encrypt_password($pass);
+    		$result = $this->mysql->getArray("user", "name", $user, "password", $pass);
+    		if($result) {
+    			if($this->encrypt_password($result['password']) == $pass) {
+    				$this->name = $result['name'];
+    				$this->id = $result['id'];
+    				return true;    				
+    			} else {
+    				echo "Wrong Password!";
+    			}	
+    		} else {
+    			return false;
+    		}		    		
+    	} else {
+    		echo ("Fill all the fields!");
+    	}
     }
 
     
@@ -230,6 +238,44 @@ class User {
     	} else {
     		return true;
     	}		
+    }
+    
+    
+    public function isAdmin() {
+    	if(empty($this->name) && empty($this->id)) {
+    		$this->getUser();
+    		return false;
+    	} else {
+    		$check = $this->mysql->getArray("user", "name", $this->name, "id", $this->id);
+    		if($check) {
+    			$this->isAdmin = $check['isAdmin'];
+    			if($this->isAdmin) {
+    				$this->isAdmin = true;	
+    				return true;
+    			} else {
+    				$this->isAdmin = false;
+    				return false;	
+    			}
+    		} else {
+    			echo "Error in isAdmin";
+    			return false;
+    		}
+    	}
+    }
+    
+    
+    public function AdvantageUserPermission() {
+    	if($this->config->useAPS == true) {
+	    	
+    		$search = '.page.php';
+	    	$path = 'pages';
+
+	    	print_r($dir = scandir($path));
+	    	foreach($dir as $string) {
+	    		$pos = strpos($string, $search);
+				$return = substr($string, 0, $pos);
+	    	}
+    	}
     }
 }
 ?>

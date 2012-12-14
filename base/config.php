@@ -17,6 +17,9 @@ class Config {
 	# Seperate with , but without spaces.
 	# For pages write the part infront of the .page.php and for Extensions write the foldername
 	public $menu_order = "example,home";
+
+	# Use AdvantagePermissionSystem
+	public $useAPS = true;
 	
 /**
  * Meta
@@ -69,9 +72,6 @@ class Config {
     
     # the minimum number to register for password
     public $minPasswordLen = 8;
-    
-    # The email as responsibil field
-    #public $needEmailtoregist = false;
  
 }
 

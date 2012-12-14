@@ -50,8 +50,5 @@
  */
 	$css = new CSS();
 	
-/**
- * Load User Class
- */
-	$user = new User();
+ 
 ?>
