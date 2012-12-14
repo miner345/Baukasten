@@ -264,7 +264,7 @@ class User {
     }
     
     
-    public function AdvantageUserPermission() {
+    public function AdvantageUserPermission($extention = "") {
     	if($this->config->useAPS == true) {
 	    	
     		$search = '.page.php';
@@ -274,6 +274,21 @@ class User {
 	    	foreach($dir as $string) {
 	    		$pos = strpos($string, $search);
 				$return = substr($string, 0, $pos);
+				$check = $this->mysql->columnExist("user_aps", $return);
+				if(file_exists($path.$return.$search)) {
+					if($this->mysql->columnExist("user_aps", $return)) {
+						return true;
+					} else {
+						$this->mysql->query("ALTER TABLE `".$this->config->table_prefix."user_aps` ADD COLUMN `".$return."`  int(2) NOT NULL AFTER `name`;");
+					}
+				} else {
+					if($this->mysql->columnExist("user_aps", $return)) {
+						$this->mysql->query("ALTER TABLE `".$this->config->table_prefix."user_aps` DROP COLUMN `".$return."`;");
+					} else {
+						return true;
+					}
+				}
+				# ALTER TABLE `user_aps` ADD COLUMN `test`  int(2) NOT NULL AFTER `name`;
 	    	}
     	}
     }

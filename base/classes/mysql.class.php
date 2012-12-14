@@ -94,5 +94,18 @@ class MySQL {
 		}
 		else throw new Exception('You need to give all parameter!');
 	}
+	
+	public function columnExist($table, $column) {
+		if(!empty($table) && !empty($column)) {
+			$check = $this->query("SELECT ".$column." FROM ".$this->config->table_prefix.$table."");
+			if($check) {
+				return true;	
+			} else {
+				echo mysql_errno();
+			}	
+		} else {
+			echo "You need to give all parameter!";
+		}	
+	}
 }
 ?>
