@@ -13,7 +13,7 @@ class User {
 	public $timeout;
 		
 	/**
-	 * This load the object from the classes
+	 * __construct() - This loads some other classes for later use
 	 */
 	
     public function __construct() {
@@ -23,7 +23,7 @@ class User {
     }
 	
 	/**
-	 * Login:Login the User in a secrue page :D
+	 * login() - Logs in
 	 */
 
     public function login($user, $pass, $pogress = "") {
@@ -50,7 +50,7 @@ class User {
 
     
     /**
-     * updateUser: User get every login a new ip in mysql thats is "last_ip"
+     * updateUser() - Sets the last_ip column in user database
      */
     
     
@@ -62,7 +62,7 @@ class User {
     }    
  
     /**
-     * changePassword: Change the password from the User
+     * changePassword() - Changes the password from the user
      */
     
     public function changePassword($oldpw, $npw, $npwrep) {
@@ -86,7 +86,7 @@ class User {
     }
     
 	/**
-	 * forgotPassword: chnage the passwort autimaticly with email support
+	 * forgotPassword() - change the password automatically with email support
 	 */
     
     public function forgotPassword($username = "", $email = "") {
@@ -94,11 +94,11 @@ class User {
     }
     
 	/**
-	 * checkValidUsername: check if username is valid
+	 * validateUsername() - checks if the username is valid
 	 */
 
     
-	public function checkValidUsername($username) {
+	public function validateUsername($username) {
 		if(preg_match('/^[a-zA-Z0-9][\w]+[a-zA-Z0-9]$/', $username)) {
 			return true;	
 		} else {
@@ -108,10 +108,10 @@ class User {
 	
 	
 	/**
-	 * checkValidEmail: check if Email is valid
+	 * validateEmail() - checks if Email is valid
 	 */
 	
-	public function checkValidEmail($email) {
+	public function validateEmail($email) {
 		if(filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			return true;
 		} else {
@@ -120,10 +120,10 @@ class User {
 	}
 	
 	/**
-	 * checkUsernameExist: check if Username is exist
+	 * checkUsername() - checks if Username exists
 	 */
 		
-	public function checkUsernameExist($username = "", $id = "") {
+	public function checkUsername($username = "", $id = "") {
 		$sqlres = mysql_query("SELECT username FROM user WHERE username = '".mysql_real_escape_string($username)."' OR id = $id");
 		if(mysql_num_rows($sqlres)) {
 			return false;
@@ -133,10 +133,10 @@ class User {
 	}
 	
 	/**
-	 * checkEmailExist: check if E-Mail is exist
+	 * checkEmail: check if E-Mail exists
 	 */
 	
-	public function checkEmailExist($email) {
+	public function checkEmail($email) {
 		$sqlres = mysql_query("SELECT email FROM user WHERE email = '".mysql_real_escape_string($email)."'");
 		if(mysql_num_rows($sqlres)) {
 			return false;
@@ -146,7 +146,7 @@ class User {
 	}
     
 	/**
-	 * encrypt_password: crypt the Passwort ;D
+	 * encrypt_password() - encrypts the password
 	 */
 	
 	public function encrypt_password($password) {
@@ -161,7 +161,7 @@ class User {
     
 
     /**
-     * register: Do regist a User 
+     * register() - Adding an user to database
      */
     
     
@@ -169,18 +169,18 @@ class User {
 	   	if($user == null || $pass == null || $passrep == null) {
 	   		throw new Exception('Please fill all the fields!');
 	   	} else {
-	   		if($checkExistUsername = $this->checkUsernameExist($user)) {   # Check is username aviable
-	   			if($checkValidUsername = $this->checkValidUsername($user)) { # Check is username valid
-			   		if(strlen($user) >= $this->config->minUsernameLen) {	# Check weather in config, if the username have a minimum of leng
-			   			if(strlen($pass) >= $this->config->minPasswordLen) { # Check weather in config, if the password have a minimum of leng
+	   		if($checkExist = $this->checkUsername($user)) {   # Check if username is available
+	   			if($validateUsername = $this->validateUsername($user)) { # Check if username is valid
+			   		if(strlen($user) >= $this->config->minUsernameLen) {	# Checks in config, if the username have a minimum of length
+			   			if(strlen($pass) >= $this->config->minPasswordLen) { # Checks in config, if the password have a minimum of length
 			   				if($pass == $passrep) {								# Check if password and password2 match
 			   					$user = trim(mysql_real_escape_string($user));	 
 			   					$pass = trim(mysql_real_escape_string($pass));
                                 if(!empty($email)) {							# Check if filled email
-                                    if($checkValidEmail = $this->checkValidEmail($email)) { # Check if email is valid
-                                        if($checkEmailExist = $this->checkEmailExist($email)) { # Check is email aviable 
-                                            $pass = $this->encrypt_password($pass);				# crypt the password
-                                            if($doregist  = $this->mysql->query("INSERT INTO user (name,password,register_ip,register_timestamp, email) VALUES ('".$user."','".$pass."','".mysql_real_escape_string($_SERVER['REMOTE_ADDR'])."',NOW(), '".trim(mysql_real_escape_string($email))."')")) {  # do write the world in database
+                                    if($validateEmail = $this->validateEmail($email)) { # Check if email is valid
+                                        if($checkEmail = $this->checkEmail($email)) { # Check if email is available 
+                                            $pass = $this->encrypt_password($pass);				# encrypts the password
+                                            if($doregist = $this->mysql->query("INSERT INTO `user` (name,password,register_ip,register_timestamp,email) VALUES ('".$user."','".$pass."','".mysql_real_escape_string($_SERVER['REMOTE_ADDR'])."',NOW(), '".trim(mysql_real_escape_string($email))."')")) {  # writes the datas in database
                                                 return true;
                                             }
                                             else { echo("An Error code on Regi code: 2");}        
@@ -211,7 +211,7 @@ class User {
     
 
     /**
-     * onPage: write in the databse the actually pagename and update the last_ip, last_timestamp
+     * onPage() - writes in the database the pagename and update the last_ip, last_timestamp
      */    
     
     public function onPage($pagename) {
@@ -225,7 +225,7 @@ class User {
     }
     
     /**
-     * getUser: Regenerate new username and id, how you can pickup it with $user = new User;m $user->name or $user->id
+     * getUser() - Regenerate new username and id, how you can pickup it with $user = new User;m $user->name or $user->id
      */
     
     public function getUser() {
@@ -233,7 +233,7 @@ class User {
     		if(empty($_SESSION)) {
     			return false;
     		} else {
-    			if ($this->checkUsernameExist("", $_SESSION['USERID'])) {
+    			if ($this->checkUsername("", $_SESSION['USERID'])) {
     				$rows = $this->mysql->getArray("user", "id", $_SESSION['USERID']);
     				$this->name = $rows['name'];
     				$this->id = $rows['id'];
@@ -247,7 +247,7 @@ class User {
     
     
     /**
-     * isAdmin: Check  a user if he is Admin 
+     * isAdmin() - Check  a user if he is Admin 
      */
         
     public function isAdmin() {
@@ -273,8 +273,8 @@ class User {
     }
     
     /**
-     * AdvantageUserPermission: This is a adanvatge user Permisison,
-     * if in the root directory habe for example : home.page.php and news.page.php
+     * AdvantageUserPermission: This is an advantage user Permission System,
+     * if in the root directory have for example : home.page.php and news.page.php
      * then the mysql table : user_aps get the home and the news column to controle this
      */
         
@@ -385,7 +385,7 @@ class User {
     }
     
     /**
-     * checkSession: Check the Session, if Session broken session get destroy
+     * checkSession: Checks the Session, when Session broken, session will destroyed
      * OR if the time out session get destroy
      */
     
