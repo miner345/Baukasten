@@ -97,11 +97,11 @@ class MySQL {
 	
 	public function columnExist($table, $column) {
 		if(!empty($table) && !empty($column)) {
-			$check = $this->query("SELECT ".$column." FROM ".$this->config->table_prefix.$table."");
+			$check = mysql_query("SELECT ".$column." FROM ".$this->config->table_prefix.$table."");
 			if($check) {
 				return true;	
 			} else {
-				echo mysql_errno();
+				return false;
 			}	
 		} else {
 			echo "You need to give all parameter!";

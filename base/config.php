@@ -19,7 +19,7 @@ class Config {
 	public $menu_order = "example,home";
 
 	# Use AdvantagePermissionSystem
-	public $useAPS = true;
+	public $useAPS = false;
 	
 /**
  * Meta
@@ -72,6 +72,12 @@ class Config {
     
     # the minimum number to register for password
     public $minPasswordLen = 8;
+
+	# Use Login timeout 
+	public $login_timeout = false;
+
+	# timeout in minutes
+	public $login_time = 10;
  
 }
 

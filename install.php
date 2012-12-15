@@ -25,6 +25,7 @@ CREATE TABLE `".$config->table_prefix."user` (
 `register_ip` VARCHAR(50) NOT NULL ,
 `last_ip` VARCHAR(50) NOT NULL ,
 `register_timestamp` INT(100) NOT NULL ,
+`sess_timeout` INT(255) NOT NULL ,
 `last_timestamp` INT(100) NOT NULL )");
 
 

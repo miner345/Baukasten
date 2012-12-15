@@ -8,6 +8,9 @@ class User {
 	public $name; #safe later the username
 	public $id; #safe later the id
 	public $isAdmin = false; #safe later the Admin
+	public $session = false;
+	public $sessionid;
+	public $timeout;
 		
 	/**
 	 * This load the object from the classes
@@ -31,6 +34,8 @@ class User {
     			if($this->encrypt_password($result['password']) == $pass) {
     				$this->name = $result['name'];
     				$this->id = $result['id'];
+    				$this->setPermissions($result['id'], $result['name'], $this->config->login_timeout, $this->config->login_time);
+    				$this->setSession();
     				return true;    				
     			} else {
     				echo "Wrong Password!";
@@ -241,6 +246,10 @@ class User {
     }
     
     
+    /**
+     * isAdmin: Check  a user if he is Admin 
+     */
+        
     public function isAdmin() {
     	if(empty($this->name) && empty($this->id)) {
     		$this->getUser();
@@ -257,39 +266,147 @@ class User {
     				return false;	
     			}
     		} else {
-    			echo "Error in isAdmin";
+    			echo "Error in isAdmin()";
     			return false;
     		}
     	}
     }
     
-    
-    public function AdvantageUserPermission($extention = "") {
-    	if($this->config->useAPS == true) {
-	    	
+    /**
+     * AdvantageUserPermission: This is a adanvatge user Permisison,
+     * if in the root directory habe for example : home.page.php and news.page.php
+     * then the mysql table : user_aps get the home and the news column to controle this
+     */
+        
+    public function AdvantageUserPermission() {
+    	if($this->config->useAPS == true) {	    	
     		$search = '.page.php';
-	    	$path = 'pages';
+	    	$path = 'pages/';
+            $string = scandir($path);
+            unset($string[0]);
+            unset($string[1]);
+            sort($string);
+            $cstring = count($string);
 
-	    	print_r($dir = scandir($path));
-	    	foreach($dir as $string) {
-	    		$pos = strpos($string, $search);
-				$return = substr($string, 0, $pos);
-				$check = $this->mysql->columnExist("user_aps", $return);
-				if(file_exists($path.$return.$search)) {
-					if($this->mysql->columnExist("user_aps", $return)) {
-						return true;
-					} else {
-						$this->mysql->query("ALTER TABLE `".$this->config->table_prefix."user_aps` ADD COLUMN `".$return."`  int(2) NOT NULL AFTER `name`;");
+	    	for($i = 0; $i <= $cstring-1; $i++) {
+                $pos[$i] = strpos($string[$i], $search);
+				$return[$i] = substr($string[$i], 0, $pos[$i]);
+				
+				if(file_exists($path.$return[$i].$search)) {
+					if(mysql_query("SELECT ".$return[$i]." FROM ".$this->config->table_prefix."user_aps") == true) {
+						echo "<br />Exestiet: ". $return[$i];
+					} 
+					else {
+						$this->mysql->query("ALTER TABLE `".$this->config->table_prefix."user_aps` ADD COLUMN `".$return[$i]."`  int(2) NOT NULL AFTER `name`;");
+						echo "<br />Wurde Erstellt: ". $return[$i];
 					}
-				} else {
-					if($this->mysql->columnExist("user_aps", $return)) {
-						$this->mysql->query("ALTER TABLE `".$this->config->table_prefix."user_aps` DROP COLUMN `".$return."`;");
-					} else {
-						return true;
-					}
-				}
-				# ALTER TABLE `user_aps` ADD COLUMN `test`  int(2) NOT NULL AFTER `name`;
+				}					
 	    	}
+	    	$list = mysql_query("SELECT * FROM ".$this->config->table_prefix."user_aps");
+	    	if ($list) {
+	    		$chlist = mysql_num_fields($list);
+	    		for($x = 0; $x < $chlist; $x++) {
+	    			$newList[$x] = mysql_field_name($list, $x);
+	    			if ($x == $chlist-1) {
+	    				unset($newList[0]);
+	    				unset($newList[1]);
+	    				sort($newList);
+	    			}
+	    		}
+	    		$x = 0;
+	    		$zz = 0;	
+	    		$y = 0;
+	    		$yy = 0;
+				$cnewList = count($newList);	    		    			    		
+	    		for($y = 0; $y <= $cnewList-1; $y++) {    
+	    			$skey1 = array_search($return[$y], $newList);
+	    			$skey = array_search($return[$y], $newList);
+	    			if($skey) {
+	    				if($yy == 0) {
+	    					$skey1 = array_search($return[0], $newList);
+	    					unset($newList[$skey1]);
+	    					$yy++;
+	    				}
+	    				unset($newList[$skey]);
+	    			}
+	    		}
+	    		sort($newList);
+	    		for($zz = 0; $zz < count($newList); $zz++) {
+	    			echo "<br>wurden nicht gefunden: ".$newList[$zz];
+	    			$getdlist[$zz] = $newList[$zz];
+	    			mysql_query("ALTER TABLE `".$this->config->table_prefix."user_aps` DROP COLUMN `".$newList[$zz]."`;");
+	    			echo "<br>wurden gelöscht: ".$newList[$zz];
+	    		}
+	    		$zz = 0;
+	    	}
+    	} 
+    }
+    
+    /**
+     * setPermissions: Set the Permisson table in user_aps 
+     */
+    
+    public function setPermissions() {
+    	if (empty($this->name) || $this->id) {
+    		$this->getUser();
+    	} else {
+    		$checkperm = $this->mysql->query("SELECT * FROM ".$this->config->table_prefix."user_aps WHERE name = '".$this->name."' AND id = ".$this->id."");
+    		if($checkperm) {
+    			return true;
+    		} else {
+    			$insert = $this->mysql->query("INSERT INTO user_aps (id,name) VALUES (".$this->id.", '".$this->name."')");
+    			if ($insert) {
+    				return true;
+    			} else {
+    				echo "Error in setPermission!";
+    			}
+    		}
+    	}
+    }
+    
+    /**
+     * setSession: Set the Session by Login 
+     */
+        
+    public function setSession($id, $user = "", $usetime, $time) {
+    	if (empty($this->name) || $this->id) {
+    		$this->getUser();
+    	} else {
+    		if($usetime) {
+    			$time = time() + 60 * $time;
+    			$_SESSION['USERTIME'] = $time;
+    		}
+    		$_SESSION['USERID'] = $id;
+    		$_SESSION['LOGGEDIN'] = true;
+    		$this->session = true;
+    		$this->sessionid = $id;
+    		$this->timeout = $time;
+    	} 	
+    }
+    
+    /**
+     * checkSession: Check the Session, if Session broken session get destroy
+     * OR if the time out session get destroy
+     */
+    
+    public function checkSession($usetime, $time) {
+    	if(empty($_SESSION['USERID']) || $_SESSION['LOGGEDIN'] == false || empty($_SESSION)) {
+    		$this->session = false;
+    		$this->sessionid = null;
+    		session_destroy();
+    		return false;
+    	} else {
+    		if ($usetime) {
+    			if ($_SESSION['USERTIME'] < time() || $this->timeout < time()) {
+    				$this->session = false;
+    				$this->sessionid = null;
+    				$this->timeout = null;
+    				session_destroy();
+    				return false;
+    			} else {
+    				return true;	
+    			}
+    		}	
     	}
     }
 }
