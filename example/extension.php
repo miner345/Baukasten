@@ -14,7 +14,7 @@ class ExtensionConfig {
 		# Location of additional CSS
 		public $add_css = "style.css";
 		
-		# Location of additional Javascript
+		# Location of additional Javascript which needs to be included in <head>
 		public $add_js = "js.js";
 		
 		# Your Main PHP file:
