@@ -4,13 +4,14 @@
  * Utils Class
  */
 
-class Utils extends Config{
+class Utils{
 	
 	/**
-	 * __construct() - $config gives the Config values to Utils class
+	 * __construct()
 	 */
 	
 	public function __construct(){
+		$this->config = new Config();
 	}
 	
 	/**
@@ -25,7 +26,10 @@ class Utils extends Config{
 		elseif(file_exists('pages/'.$check.'.page.php')){
 			return "page";
 		}
-		else throw new Exception('No Page or Extension');
+		elseif(file_exists('base/system/'.$check.'.sys.php')){
+			return "system";
+		}
+		else return false;
 	}
 	
 	/**
@@ -33,7 +37,7 @@ class Utils extends Config{
 	 */
 	
 	public function getConfigExtensions(){
-		$array = explode(',',parent::extensions);
+		$array = explode(',',$this->config->extensions);
 		return $array;
 	}
 	
@@ -63,11 +67,16 @@ class Utils extends Config{
 	 */
 	
 	public function getMenu(){
-		$array = explode(',',parent::menu_order);
+		$array = explode(',',$this->config->menu_order);
 		foreach($array as $menu){
 			$check = $this->checkPOE($menu);
-			if($check=='extension' || $check=='page'){
-				$return[]=$menu;
+			if($check=='extension'){
+				$this->ext = new Extension($menu);
+				$this->ext->load();
+				$return[] = array('show' => $this->ext->config->name_in_navigation, 'link' => 'index.php?p='.$menu);
+			}
+			elseif($check=='page'){
+				$return[] = array('show' => ucfirst($menu), 'link' => 'index.php?p='.$menu);
 			}
 			else throw new Exception('Fail in Menu Order: '.$menu.' is not an Page or Extension!');
 		}

@@ -16,10 +16,10 @@ class Config {
 	# Write the Pages in the Menu in the Order you want
 	# Seperate with , but without spaces.
 	# For pages write the part infront of the .page.php and for Extensions write the foldername
-	public $menu_order = "example,home";
+	public $menu_order = "home,example,test1,test2,test3";
 
 	# Use AdvantagePermissionSystem
-	public $useAPS = false;
+	public $useAPS = true;
 	
 /**
  * Meta
@@ -62,7 +62,7 @@ class Config {
 	# The name of the Extension is the name of the folder
 	# Seperate multiple Extensions with ' but without spaces
 	# Example: public $extensions = "example,extension,blabla";
-	public $extensions = "example,extension,blabla";
+	public $extensions = "example";
     
 /**
  * Until Config
@@ -72,12 +72,6 @@ class Config {
     
     # the minimum number to register for password
     public $minPasswordLen = 8;
-
-	# Use Login timeout 
-	public $login_timeout = false;
-
-	# timeout in minutes
-	public $login_time = 10;
  
 }
 

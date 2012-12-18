@@ -16,6 +16,23 @@
  */
 	require_once('./base/core.php');
 	
+/**
+ * Checking page
+ */
+	if(empty($_GET['p'])) $page = 'home';
+	else $page = $_GET['p'];
+	
+	if($type = $utils->checkPOE($page)){
+		if($type=='extension'){
+			$ext = new Extension($page);
+			if($ext->validate()){
+				$ext->load();
+			}
+		}
+	}
+	else header("Location: index.php");
+	
+	
 
 	/*************************** Testing ***********************/
 	/***********************************************************/
@@ -25,7 +42,7 @@
        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
-		<title><?php echo $config->name; ?></title>
+		<title><?php echo ucfirst($page); ?> - <?php echo $config->name; ?></title>
 		
 		<!--      Meta       -->
 		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
@@ -35,6 +52,10 @@
 		
 		<!--     Style     -->
 		<?php echo $css->load(); ?>
+		<?php if($type=='extension') echo $ext->getCSS(); ?>
+		
+		<!--     Javascript     -->
+		<?php if($type=='extension') echo $ext->getJS(); ?>
 		
 	</head>
 	<body>
@@ -45,22 +66,28 @@
 			<div id="main">
 				<div id="navigation">
 					<ul>
-						<a href=""><li><div class="nav_1"></div><div class="nav_2">Test</div><div class="nav_3"></div></li></a>
-						<a href=""><li><div class="nav_1"></div><div class="nav_2">Test2</div><div class="nav_3"></div></li></a>
-						<a href=""><li><div class="nav_1"></div><div class="nav_2">Test3</div><div class="nav_3"></div></li></a>
-						<a href=""><li><div class="nav_1"></div><div class="nav_2">Test4</div><div class="nav_3"></div></li></a>
-						<a href=""><li><div class="nav_1"></div><div class="nav_2">Test5</div><div class="nav_3"></div></li></a>
+						<?php
+							foreach($utils->getMenu() as $menu){
+								echo '<a href="'.$menu['link'].'"><li><div class="nav_1"></div><div class="nav_2">'.$menu['show'].'</div><div class="nav_3"></div></li></a>';					
+							}
+						?>
 					</ul>
 				</div>
                 
-                <pre>
-               <?php
-               ################
-               $user = new User;
-               $user->AdvantageUserPermission();
-               ################
-               ?>               
-               </pre>
+				<div id="content">
+					<?php 
+						if($type=='extension'){
+							$ext->loadPHP();
+						}
+						elseif($type=='page'){
+							include('pages/'.$page.'.page.php');
+						}
+						elseif($type='system'){
+							include('base/system/'.$page.'.sys.php');
+						}
+						
+					?>
+				</div>
                 
 			</div>
 			<div id="footer">
