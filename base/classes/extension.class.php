@@ -73,8 +73,8 @@ class Extension {
 	 */
 	
 	public function loadPHP() {
-		if($this->config->main_php != "" && file_exists($this->folder.'/'.$this->main_php)){
-			include($this->folder.'/'.$this->main_php);
+		if($this->config->main_php != "" && file_exists($this->folder.'/'.$this->config->main_php)){
+			include($this->folder.'/'.$this->config->main_php);
 		}
 		else echo 'FATAL Error in Extension: Main php file not found!';
 	}
